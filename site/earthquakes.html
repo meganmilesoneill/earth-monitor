@@ -112,13 +112,14 @@
 
 					if(eventType){
 						contentString = "Place: " + feature.getProperty("place")
-								+ "<br/>Mag: " + feature.getProperty("mag")
-								+ "<br/>Time: " + feature.getProperty("time")
-										+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
+							+ "<br/>Mag: " + feature.getProperty("mag")
+							+ "<br/>Time: " + feature.getProperty("time")
+							+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
 						windowPosition = feature.getGeometry().get();
 					}
 					else{
-						contentString = "Description: <br/>" + feature.getProperty("Description")
+						contentString = "Name: <br/>" + feature.getProperty("name")
+							+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
 						//TODO: set coordinates for infoWindow based on fault geometry
 					}
 
