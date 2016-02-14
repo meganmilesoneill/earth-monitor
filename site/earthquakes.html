@@ -51,7 +51,12 @@
 			function addFaultData(map){
 				//TODO: Filter the faults based on the map bounds
 				// and load data on "idle" map event
-				loadGeoData(map, "http://localhost:5000/faults");				
+				//loadGeoData(map, "http://localhost:5000/faults");				
+				google.maps.event.addListener(map, 'idle', function(){
+					var bounds = map.getBounds();
+					loadGeoData(map, "http://localhost:5000/faults", bounds);
+					console.log("addFaultData complete.")
+				});
 			}
 
 			function showCoords(map){
