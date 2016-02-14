@@ -30,7 +30,7 @@ def getFaults():
 
 		connection = psycopg2.connect(database="earth-monitor")
 		cursor = connection.cursor()
-		cursor.execute("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(fa.geometry)::json As geometry, row_to_json(p) As properties FROM faults As fa INNER JOIN (SELECT id, fault_id, name, url FROM faults) As p ON fa.id = p.id WHERE fa.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326) AND fa.fault_id IS NOT NULL) as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude))
+		cursor.execute("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(fa.geometry)::json As geometry, row_to_json(p) As properties FROM faults As fa INNER JOIN (SELECT id, fault_id, name, url FROM faults) As p ON fa.id = p.id WHERE fa.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326) AND fa.fault_id IS NOT NULL AND age <> '<1,600,000') as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude))
 		data = cursor.fetchall()
 		cursor.close()
 		connection.close()
