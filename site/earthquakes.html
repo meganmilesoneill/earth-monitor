@@ -26,7 +26,25 @@
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuAd8MjJ2gDX8Djy72l0GQ36n5-He0N0E"></script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript">
+			function mapStatus() {
+				var loading = false;
+
+				function setLoading(value){
+					loading = value;
+					return loading;
+				}
+				function getLoading(){
+					return loading;
+				}
+
+				return {
+					setLoading: setLoading,
+					getLoading: getLoading
+				}
+			}
 			function initialize(){
+				var status = new mapStatus();
+
 				var mapOptions = {
 					center: new google.maps.LatLng(37.7833, -122.4167),
 					zoom: 8,
@@ -34,9 +52,12 @@
 				};
 				var map = new google.maps.Map(document.getElementById("mapDiv"), mapOptions);
 				map.data.setStyle(styleEventFeature);
+
 				addShowCoords(map);
-				addEventData(map);
-				addFaultData(map);
+				addEventData(status, map);
+				addFaultData(status, map);
+				addLoadingStatusEvents(status, map);
+
 				addInfoWindowHandler(map);
 				addMapConsoleLogging(map);
 			}
@@ -48,19 +69,36 @@
 				google.maps.event.addListener(map, 'click', function(){ console.log("map click.")});
 				google.maps.event.addListener(map, 'tilesloaded', function(){ console.log("map tilesloaded.")});
 			}
-			function addEventData(map){
+
+			function addLoadingStatusEvents(status, map){
+				google.maps.event.addListener(map, 'dragstart', function(){ 
+					//console.log("map dragstart.")
+					status.setLoading(true);
+					console.log("loading status set to true")
+				});
+				google.maps.event.addListener(map, 'dragend', function(){ 
+					//console.log("map dragend.")
+					status.setLoading(false);
+					console.log("loading status set to false")
+				});				
+			}
+			function addEventData(status, map){
 				google.maps.event.addListener(map, 'idle', function(){
-					var bounds = map.getBounds();
-					loadGeoData(map, "http://localhost:5000/earthquakes", bounds);
-					console.log("addEventData complete.")
+					if(!status.getLoading()){						
+						var bounds = map.getBounds();
+						loadGeoData(map, "http://localhost:5000/earthquakes", bounds);
+						console.log("addEventData complete.")
+					}
 				});
 			}
 
-			function addFaultData(map){
+			function addFaultData(status, map){
 				google.maps.event.addListener(map, 'idle', function(){
-					var bounds = map.getBounds();
-					loadGeoData(map, "http://localhost:5000/faults", bounds);
-					console.log("addFaultData complete.")
+					if(!status.getLoading()){						
+						var bounds = map.getBounds();
+						loadGeoData(map, "http://localhost:5000/faults", bounds);
+						console.log("addFaultData complete.")
+					}
 				});
 			}
 
@@ -118,13 +156,13 @@
 					if(eventType){
 						contentString = "Place: " + feature.getProperty("place")
 							+ "<br/>Mag: " + feature.getProperty("mag")
-							+ "<br/>Time: " + feature.getProperty("time")
-							+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
+							+ "<br/>Time: " + new Date(feature.getProperty("time"))
+							+ "<br/><a href='" + feature.getProperty("url") + "' target='_blank'>more info</a>"
 						windowPosition = feature.getGeometry().get();
 					}
 					else{
 						contentString = "Name: <br/>" + feature.getProperty("name")
-							+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
+							+ "<br/><a href='" + feature.getProperty("url") + "' target='_blank'>more info</a>"
 						windowPosition = event.latLng;
 					}
 
