@@ -38,20 +38,25 @@
 				addEventData(map);
 				addFaultData(map);
 				addInfoWindowHandler(map);
+				addMapConsoleLogging(map);
 			}
 
+			function addMapConsoleLogging(map){
+				google.maps.event.addListener(map, 'idle', function(){ console.log("map idle.")});
+				google.maps.event.addListener(map, 'dragstart', function(){ console.log("map dragstart.")});
+				google.maps.event.addListener(map, 'dragend', function(){ console.log("map dragend.")});
+				google.maps.event.addListener(map, 'click', function(){ console.log("map click.")});
+				google.maps.event.addListener(map, 'tilesloaded', function(){ console.log("map tilesloaded.")});
+			}
 			function addEventData(map){
 				google.maps.event.addListener(map, 'idle', function(){
 					var bounds = map.getBounds();
-					loadGeoData(map, "http://earthquake.usgs.gov/fdsnws/event/1/query.geojson", bounds);
+					loadGeoData(map, "http://localhost:5000/earthquakes", bounds);
 					console.log("addEventData complete.")
 				});
 			}
 
 			function addFaultData(map){
-				//TODO: Filter the faults based on the map bounds
-				// and load data on "idle" map event
-				//loadGeoData(map, "http://localhost:5000/faults");				
 				google.maps.event.addListener(map, 'idle', function(){
 					var bounds = map.getBounds();
 					loadGeoData(map, "http://localhost:5000/faults", bounds);
@@ -76,7 +81,7 @@
 
 			function styleEventFeature(feature){
 				var eventType = feature.getProperty('type');
-				if(eventType){
+				if(eventType == "earthquake"){
 					return {
 						icon: {
 							path: google.maps.SymbolPath.CIRCLE,
@@ -120,7 +125,7 @@
 					else{
 						contentString = "Name: <br/>" + feature.getProperty("name")
 							+ "<br/><a href='" + feature.getProperty("url") + "' target-'_blank'>more info</a>"
-						//TODO: set coordinates for infoWindow based on fault geometry
+						windowPosition = event.latLng;
 					}
 
 					infoWindow.setContent("<div id='infoDiv'>" + contentString + "</div>")
