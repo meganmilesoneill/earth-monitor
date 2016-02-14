@@ -9,11 +9,29 @@ cursor.execute("DROP TABLE IF EXISTS faults")
 
 cursor.execute("CREATE TABLE faults (" +
                    "id SERIAL PRIMARY KEY," +
-                   "fault_id VARCHAR NULL," +
+                   "slipdirect VARCHAR NULL," +
+                   "length decimal NULL," +
+                   "sectionid VARCHAR NULL," +
                    "name VARCHAR NULL," +
-                   "url VARCHAR NULL," +
-                   "age VARCHAR NULL," +
+                   "fcode smallint NULL," +
+                   "slipsense VARCHAR NULL," +
+                   "agecat VARCHAR NULL," +
+                   "age bigint NULL," +
+                   "objectid bigint NULL," +
+                   "facode VARCHAR NULL," +
+                   "mappedscal VARCHAR NULL," +
+                   "faultid VARCHAR NULL," +
+                   "slipcode smallint NULL," +
                    "ftype VARCHAR NULL," +
+                   "dipdirecti VARCHAR NULL," +
+                   "num VARCHAR NULL," +
+                   "secondaries VARCHAR NULL," +
+                   "cooperator VARCHAR NULL," +
+                   "acode smallint NULL," +
+                   "azimuth smallint NULL," +
+                   "sliprate VARCHAR NULL," +
+                   "url VARCHAR NULL," +
+                   "code bigint NULL," +
                    "geometry GEOGRAPHY)")
 
 

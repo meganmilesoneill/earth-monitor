@@ -24,13 +24,14 @@ def getFaults():
 	minlatitude = request.args.get('minlatitude', 38.79394764206436, type=float)
 	maxlongitude = request.args.get('maxlongitude', -119.31754426171875, type=float)
 	maxlatitude = request.args.get('maxlatitude', 36.682994957749884, type=float)
+	maxage = 1600000
 
 	try:
 		data = None
 
 		connection = psycopg2.connect(database="earth-monitor")
 		cursor = connection.cursor()
-		cursor.execute("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(fa.geometry)::json As geometry, row_to_json(p) As properties FROM faults As fa INNER JOIN (SELECT id, fault_id, name, url FROM faults) As p ON fa.id = p.id WHERE fa.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326) AND fa.fault_id IS NOT NULL AND age <> '<1,600,000') as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude))
+		cursor.execute("SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(fa.geometry)::json As geometry, row_to_json(p) As properties FROM faults As fa INNER JOIN (SELECT id, faultid, name, url, agecat FROM faults) As p ON fa.id = p.id WHERE fa.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326) AND fa.faultid IS NOT NULL AND fa.age < %s) as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude, maxage))
 		data = cursor.fetchall()
 		cursor.close()
 		connection.close()
