@@ -61,7 +61,7 @@ def getEarthquakes():
 		enddate = datetime.datetime.strptime(endtime, '%Y-%m-%d')
 		timefilter = " AND e.time <= %s" % (enddate.timestamp() * 1000)
 
-	query = "SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(e.geometry)::json As geometry, row_to_json(p) As properties FROM earthquakes As e INNER JOIN (SELECT id, eventid, mag, place, time, url, detail FROM earthquakes) As p ON e.id = p.id WHERE e.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326)%s) as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude, timefilter)
+	query = "SELECT row_to_json(fc) FROM (SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM (SELECT 'Feature' As type, ST_AsGeoJSON(e.geometry)::json As geometry, row_to_json(p) As properties FROM earthquakes As e INNER JOIN (SELECT id, eventid, mag, place, time, url, detail, type FROM earthquakes) As p ON e.id = p.id WHERE e.geometry && ST_MakeEnvelope(%4.6f, %4.6f, %4.6f, %4.6f, 4326)%s) as f) as fc;" % (minlongitude, minlatitude, maxlongitude, maxlatitude, timefilter)
 
 	try:
 		data = None
