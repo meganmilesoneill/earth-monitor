@@ -25,7 +25,7 @@ def getNextTimeRange():
 	startdate = getLastSucess()
 	print("last successful startdate: %s" % str(startdate))
 	enddate = startdate + datetime.timedelta(days=30)
-	if(enddate > datetime.datetime.now()):
+	if(enddate > datetime.datetime.utcnow()):
 		enddate = None
 
 	return (startdate, enddate)
@@ -118,7 +118,7 @@ def main():
 	startdate, enddate = getNextTimeRange()
 	print("Next time range: %s - %s" % (str(startdate), str(enddate)))
 
-	today = datetime.datetime.now()
+	today = datetime.datetime.utcnow()
 
 	while(startdate <= today):
 		print("Importing next range")
