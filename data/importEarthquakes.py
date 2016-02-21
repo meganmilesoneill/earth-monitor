@@ -39,12 +39,12 @@ def importEarthquakeData(startdate, enddate):
 	print("Importing earthquake data from: %s" % url)
 
 	query = "INSERT INTO earthquakes " \
-	    "(eventid, mag, place, time, updated, tz, url, detail, felt, cdi, mmi, alert, tsunami, sig, net, code, ids, sources, types, nst, dmin, rms, gap, magType, type, geometry) " \
+	    "(eventid, mag, place, time, updated, tz, url, detail, felt, cdi, mmi, alert, tsunami, sig, net, code, ids, sources, types, nst, dmin, rms, gap, magType, type, title, geometry) " \
 	    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ST_GeogFromText(%s))"
 
 	datasource = osgeo.ogr.Open(url)
 	if not datasource:
-		sys.exit("ERROR: Cannot open GeoJSON datasource: %s" % query)
+		sys.exit("ERROR: Cannot open GeoJSON datasource: %s" % url)
 
 	layer = datasource.GetLayer('OGRGeoJSON')
 
@@ -94,6 +94,7 @@ def importEarthquakeData(startdate, enddate):
 					feature.GetField("gap"), 
 					feature.GetField("magType"), 
 					feature.GetField("type"), 
+					feature.GetField("title"), 
 					wkt
 				)
 
@@ -101,7 +102,7 @@ def importEarthquakeData(startdate, enddate):
 				cursor.execute(query, data)
 				print('creating earthquake record: %s' % progress_text)
 			except:
-				print('ERROR creating earthquake record: %s\n%s' % (progress_text, sys.exc_info()[0]))
+				print('ERROR creating earthquake record: %s\n%s\n%s' % (progress_text, sys.exc_info()[0], query % data))
 				continue
 		else:
 			print("no geometry for %s" % feature.GetField("eventid"))

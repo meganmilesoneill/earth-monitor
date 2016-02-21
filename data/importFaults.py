@@ -28,7 +28,7 @@ def importFaultData():
 				age = int(''.join([c for c in agecat if c not in (',', '<')]))
 			except:
 				age = 0
-				
+
 			data = (
 				feature.GetField("slipdirect"), 
 				feature.GetField("length"), 

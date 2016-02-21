@@ -50,25 +50,26 @@ cursor.execute("CREATE TABLE earthquakes (" +
                    "tz smallint NULL," +
                    "url VARCHAR NULL," +
                    "detail VARCHAR NULL," +
-                   "felt smallint NULL," +
+                   "felt bigint NULL," +
                    "cdi decimal NULL," +
                    "mmi decimal NULL," +
                    "alert VARCHAR NULL," +
                    "status VARCHAR NULL," +
-                   "tsunami smallint NULL," +
-                   "sig smallint NULL," +
+                   "tsunami bigint NULL," +
+                   "sig bigint NULL," +
                    "net VARCHAR NULL," +
                    "code VARCHAR NULL," +
                    "ids VARCHAR NULL," +
                    "sources VARCHAR NULL," +
                    "types VARCHAR NULL," +
-                   "nst smallint NULL," +
+                   "nst bigint NULL," +
                    "dmin decimal NULL," +
                    "rms decimal NULL," +
                    "gap decimal NULL," +
                    "magType VARCHAR NULL," +
                    "type VARCHAR NULL," +
-                   "geometry GEOGRAPHY)")
+                   "title VARCHAR NULL," +
+                   "geometry GEOGRAPHY")
 
 cursor.execute("CREATE INDEX earthquake_index ON earthquakes USING GIST(geometry)")
 
